@@ -1,0 +1,53 @@
+#!gbuild
+
+# Header section. Define macros (optional) here.
+
+[Library]
+# End of Header section. Last line of section must be project type in '[ ]'.
+
+# Options section. Must be indented. Specifies options that apply to this project and its children.
+    :sourceDir=${__NNG_ROOT_DIR}/src
+    -I$(__NNG_ROOT_DIR)/include
+    -I$(__NNG_ROOT_DIR)/src
+    -DNNG_PLATFORM_POSIX
+    -DNNG_USE_STD_RANDOM=1
+    -DNNG_TRANSPORT_TCP=1
+    -DAI_NUMERICSERV=0
+    -language=c                         # Required because linking to ESX libs implemented in C++
+    -lposix
+    -lstd
+
+# Children section. Specifies files included by this project, their types and respective options.
+
+$(__NNG_ROOT_DIR)/src/core/init.c
+$(__NNG_ROOT_DIR)/src/core/listener.c
+$(__NNG_ROOT_DIR)/src/core/options.c
+$(__NNG_ROOT_DIR)/src/core/stream.c
+$(__NNG_ROOT_DIR)/src/core/tcp.c
+$(__NNG_ROOT_DIR)/src/core/strs.c
+$(__NNG_ROOT_DIR)/src/core/message.c
+$(__NNG_ROOT_DIR)/src/core/msgqueue.c
+$(__NNG_ROOT_DIR)/src/core/list.c
+$(__NNG_ROOT_DIR)/src/core/taskq.c
+$(__NNG_ROOT_DIR)/src/core/dialer.c
+$(__NNG_ROOT_DIR)/src/core/socket.c
+$(__NNG_ROOT_DIR)/src/core/idhash.c
+$(__NNG_ROOT_DIR)/src/core/tcp.c
+$(__NNG_ROOT_DIR)/src/core/file.c
+$(__NNG_ROOT_DIR)/src/core/stats.c
+$(__NNG_ROOT_DIR)/src/core/reap.c
+$(__NNG_ROOT_DIR)/src/core/aio.c
+$(__NNG_ROOT_DIR)/src/core/protocol.c
+$(__NNG_ROOT_DIR)/src/core/thread.c
+$(__NNG_ROOT_DIR)/src/core/device.c
+$(__NNG_ROOT_DIR)/src/core/timer.c
+$(__NNG_ROOT_DIR)/src/core/pollable.c
+$(__NNG_ROOT_DIR)/src/core/url.c
+$(__NNG_ROOT_DIR)/src/core/lmq.c
+$(__NNG_ROOT_DIR)/src/core/transport.c
+$(__NNG_ROOT_DIR)/src/core/pipe.c
+$(__NNG_ROOT_DIR)/src/core/panic.c
+$(__NNG_ROOT_DIR)/src/core/clock.c
+$(__NNG_ROOT_DIR)/src/nng.c
+
+# End of Children section.

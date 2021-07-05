@@ -1,0 +1,43 @@
+#!gbuild
+
+# Header section. Define macros (optional) here.
+
+[Library]
+# End of Header section. Last line of section must be project type in '[ ]'.
+
+# Options section. Must be indented. Specifies options that apply to this project and its children.
+    :sourceDir=${__NNG_ROOT_DIR}/src
+    -I$(__NNG_ROOT_DIR)/include
+    -I$(__NNG_ROOT_DIR)/src
+    -DNNG_PLATFORM_POSIX
+    -DNNG_USE_STD_RANDOM=1
+    -DNNG_TRANSPORT_TCP=1
+    -DAI_NUMERICSERV=0
+    -language=c                         # Required because linking to ESX libs implemented in C++
+    -lposix
+    -lstd
+
+# Children section. Specifies files included by this project, their types and respective options.
+
+$(__NNG_ROOT_DIR)/src/platform/posix/posix_ipcconn.c
+$(__NNG_ROOT_DIR)/src/platform/posix/posix_alloc.c
+$(__NNG_ROOT_DIR)/src/platform/posix/posix_sockaddr.c
+$(__NNG_ROOT_DIR)/src/platform/posix/posix_clock.c
+$(__NNG_ROOT_DIR)/src/platform/posix/posix_pollq_poll.c
+$(__NNG_ROOT_DIR)/src/platform/posix/posix_tcpconn.c
+$(__NNG_ROOT_DIR)/src/platform/posix/posix_pollq_kqueue.c
+$(__NNG_ROOT_DIR)/src/platform/posix/posix_file.c
+$(__NNG_ROOT_DIR)/src/platform/posix/posix_debug.c
+$(__NNG_ROOT_DIR)/src/platform/posix/posix_tcpdial.c
+$(__NNG_ROOT_DIR)/src/platform/posix/posix_atomic.c
+$(__NNG_ROOT_DIR)/src/platform/posix/posix_ipclisten.c
+$(__NNG_ROOT_DIR)/src/platform/posix/posix_ipcdial.c
+$(__NNG_ROOT_DIR)/src/platform/integrity/integrity_random.c
+$(__NNG_ROOT_DIR)/src/platform/posix/posix_resolv_gai.c
+$(__NNG_ROOT_DIR)/src/platform/posix/posix_thread.c
+$(__NNG_ROOT_DIR)/src/platform/posix/posix_pollq_port.c
+$(__NNG_ROOT_DIR)/src/platform/posix/posix_tcplisten.c
+$(__NNG_ROOT_DIR)/src/platform/posix/posix_pipe.c
+$(__NNG_ROOT_DIR)/src/platform/posix/posix_pollq_epoll.c
+
+# End of Children section.

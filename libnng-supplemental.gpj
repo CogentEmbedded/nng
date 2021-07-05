@@ -1,0 +1,27 @@
+#!gbuild
+
+# Header section. Define macros (optional) here.
+
+[Library]
+# End of Header section. Last line of section must be project type in '[ ]'.
+
+# Options section. Must be indented. Specifies options that apply to this project and its children.
+    :sourceDir=${__NNG_ROOT_DIR}/src
+    -I$(__NNG_ROOT_DIR)/include
+    -I$(__NNG_ROOT_DIR)/src
+    -DNNG_PLATFORM_POSIX
+    -DNNG_USE_STD_RANDOM=1
+    -DNNG_TRANSPORT_TCP=1
+    -DAI_NUMERICSERV=0
+    -language=c                         # Required because linking to ESX libs implemented in C++
+    -lposix
+    -lstd
+
+# Children section. Specifies files included by this project, their types and respective options.
+
+$(__NNG_ROOT_DIR)/src/supplemental/util/platform.c
+$(__NNG_ROOT_DIR)/src/supplemental/sha1/sha1.c
+$(__NNG_ROOT_DIR)/src/supplemental/tls/tls_common.c
+$(__NNG_ROOT_DIR)/src/supplemental/websocket/stub.c
+
+# End of Children section.

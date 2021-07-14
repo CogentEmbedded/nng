@@ -142,7 +142,10 @@ resolv_task(resolv_item *item)
 	// host part are split.
 	memset(&hints, 0, sizeof(hints));
 #ifdef AI_ADDRCONFIG
-	hints.ai_flags = AI_ADDRCONFIG;
+	// hints.ai_flags = AI_ADDRCONFIG;
+	// SZ: getaddrinfo on GHS Integrity (c)(tm)(r) checks whenther
+	// hints.ai_flags is less than 0x7 and returns error otherwise.
+	// However AI_ADDRCONFIG is equal to 0x40. 
 #endif
 	if (item->passive) {
 		hints.ai_flags |= AI_PASSIVE;

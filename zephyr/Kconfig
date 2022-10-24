@@ -1,0 +1,4 @@
+# SPDX-License-Identifier: MIT
+
+config NNG
+	bool "Enable support for nng"

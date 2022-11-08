@@ -19,7 +19,9 @@
 #include <stdlib.h>
 #include <string.h>
 #include <sys/socket.h>
+#ifndef __ZEPHYR__
 #include <sys/un.h>
+#endif
 
 // We use a single resolver taskq - but we allocate a few threads
 // for it to ensure that names can be looked up concurrently.  This isn't
@@ -443,6 +445,11 @@ nni_parse_ip_port(const char *addr, nni_sockaddr *sa)
 int
 nni_posix_resolv_sysinit(void)
 {
+#ifdef __ZEPHYR__
+	nni_mtx_init(&resolv_mtx);
+	nni_cv_init(&resolv_cv, &resolv_mtx);
+#endif
+
 	resolv_fini = false;
 	nni_aio_list_init(&resolv_aios);
 

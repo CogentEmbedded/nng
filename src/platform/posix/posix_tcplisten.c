@@ -19,8 +19,9 @@
 #include <stdlib.h>
 #include <string.h>
 #include <sys/socket.h>
-#include <sys/types.h>
+#ifndef __ZEPHYR__
 #include <sys/uio.h>
+#endif
 #include <unistd.h>
 
 #ifndef SOCK_CLOEXEC

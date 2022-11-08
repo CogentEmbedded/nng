@@ -256,12 +256,15 @@ static void *
 nni_plat_thr_main(void *arg)
 {
 	nni_plat_thr *thr = arg;
+
+#ifdef NNG_PLATFORM_POSIX_SIGNALS
 	sigset_t      set;
 
 	// Suppress (block) SIGPIPE for this thread.
 	sigemptyset(&set);
 	sigaddset(&set, SIGPIPE);
 	(void) pthread_sigmask(SIG_BLOCK, &set, NULL);
+#endif
 
 	thr->func(thr->arg);
 	return (NULL);
@@ -275,6 +278,13 @@ nni_plat_thr_init(nni_plat_thr *thr, void (*fn)(void *), void *arg)
 	thr->func = fn;
 	thr->arg  = arg;
 
+#ifdef NNG_THREAD_ALLOC_STACK
+	void *stack = nni_alloc(NNG_THREAD_STACK_SIZE);
+	if (stack == NULL) {
+		return (NNG_ENOMEM);
+	}
+	pthread_attr_setstack(&nni_thrattr, stack, NNG_THREAD_STACK_SIZE);
+#endif
 	// POSIX wants functions to return a void *, but we don't care.
 	rv = pthread_create(&thr->tid, &nni_thrattr, nni_plat_thr_main, thr);
 	if (rv != 0) {
@@ -350,6 +360,10 @@ nni_plat_init(int (*helper)(void))
 		return (0); // fast path
 	}
 
+#ifdef __ZEPHYR__
+	pthread_mutex_init(&nni_plat_init_lock, NULL);
+#endif
+
 	pthread_mutex_lock(&nni_plat_init_lock);
 	if (nni_plat_inited) { // check again under the lock to be sure
 		pthread_mutex_unlock(&nni_plat_init_lock);
@@ -365,7 +379,7 @@ nni_plat_init(int (*helper)(void))
 		return (NNG_ENOMEM);
 	}
 
-#if !defined(NNG_USE_GETTIMEOFDAY) && NNG_USE_CLOCKID != CLOCK_REALTIME
+#if defined(NNG_SETCLOCK)
 	if (pthread_condattr_setclock(&nni_cvattr, NNG_USE_CLOCKID) != 0) {
 		pthread_mutex_unlock(&nni_plat_init_lock);
 		pthread_mutexattr_destroy(&nni_mxattr);
@@ -410,6 +424,7 @@ nni_plat_init(int (*helper)(void))
 		return (rv);
 	}
 
+#ifndef __ZEPHYR__
 	if (pthread_atfork(NULL, NULL, nni_atfork_child) != 0) {
 		pthread_mutex_unlock(&nni_plat_init_lock);
 		nni_posix_resolv_sysfini();
@@ -419,6 +434,8 @@ nni_plat_init(int (*helper)(void))
 		pthread_attr_destroy(&nni_thrattr);
 		return (NNG_ENOMEM);
 	}
+#endif
+
 	if ((rv = helper()) == 0) {
 		nni_plat_inited = 1;
 	}

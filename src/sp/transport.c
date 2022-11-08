@@ -21,6 +21,9 @@ static nni_rwlock sp_tran_lk = NNI_RWLOCK_INITIALIZER;
 void
 nni_sp_tran_register(nni_sp_tran *tran)
 {
+#ifdef __ZEPHYR__
+	nni_rwlock_init(&sp_tran_lk);
+#endif
 	nni_rwlock_wrlock(&sp_tran_lk);
 	if (!nni_list_node_active(&tran->tran_link)) {
 		tran->tran_init();

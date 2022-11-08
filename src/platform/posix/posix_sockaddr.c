@@ -20,7 +20,9 @@
 #include <string.h>
 #include <sys/socket.h>
 #include <sys/types.h>
+#ifndef __ZEPHYR__
 #include <sys/un.h>
+#endif
 
 size_t
 nni_posix_nn2sockaddr(void *sa, const nni_sockaddr *na)

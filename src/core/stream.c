@@ -25,6 +25,7 @@ static struct {
 	int (*listener_alloc)(nng_stream_listener **, const nng_url *);
 
 } stream_drivers[] = {
+#ifdef NNG_TRANSPORT_IPC
 	{
 	    .scheme         = "ipc",
 	    .dialer_alloc   = nni_ipc_dialer_alloc,
@@ -36,6 +37,7 @@ static struct {
 	    .dialer_alloc   = nni_ipc_dialer_alloc,
 	    .listener_alloc = nni_ipc_listener_alloc,
 	},
+#endif
 #endif
 #ifdef NNG_HAVE_ABSTRACT_SOCKETS
 	{

@@ -93,7 +93,9 @@ static struct {
 	{ EWOULDBLOCK,	   NNG_EAGAIN	    },
 	{ ENOSPC,	   NNG_ENOSPC	    },
 	{ EFBIG,	   NNG_ENOSPC	    },
+#ifdef EDQUOT
 	{ EDQUOT,	   NNG_ENOSPC	    },
+#endif
 	{ ENFILE,	   NNG_ENOFILES	    },
 	{ EMFILE,	   NNG_ENOFILES	    },
 	{ EEXIST,	   NNG_EEXIST	    },

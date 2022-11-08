@@ -2,3 +2,8 @@
 
 config NNG
 	bool "Enable support for nng"
+
+config NNG_WEBSOCKETS
+	bool "Enable Web Sockets in NNG"
+	depends on NNG
+	default y

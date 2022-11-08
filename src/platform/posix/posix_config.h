@@ -7,6 +7,30 @@
 // found online at https://opensource.org/licenses/MIT.
 //
 
+// Some dependency notes:
+//
+// NNG_PLATFORM_POSIX_THREAD depends on NNG_PLATFORM_POSIX_CLOCK.  Also,
+// when using NNG_PLATFORM_POSIX_CLOCK, your condition variable timeouts need
+// to use the same base clock values.  Normally these should be used
+// together.  Almost everything depends on NNG_PLATFORM_POSIX_DEBUG.
+#ifdef NNG_PLATFORM_POSIX
+#define NNG_PLATFORM_POSIX_ALLOC
+#define NNG_PLATFORM_POSIX_DEBUG
+#define NNG_PLATFORM_POSIX_CLOCK
+#define NNG_PLATFORM_POSIX_IPC
+#define NNG_PLATFORM_POSIX_TCP
+#define NNG_PLATFORM_POSIX_PIPE
+#define NNG_PLATFORM_POSIX_RANDOM
+#define NNG_PLATFORM_POSIX_SOCKET
+#define NNG_PLATFORM_POSIX_THREAD
+#define NNG_PLATFORM_POSIX_PIPEDESC
+#define NNG_PLATFORM_POSIX_EPDESC
+#define NNG_PLATFORM_POSIX_SOCKADDR
+#define NNG_PLATFORM_POSIX_UDP
+#define NNG_PLATFORM_POSIX_SIGNALS
+#endif
+
+
 // The following adjustments to the platform may be defined.  These can
 // be defined in either platform/config.h or loaded in via external
 // defines using cmake.
@@ -76,6 +100,18 @@
 #endif
 #endif
 
+#if !defined(NNG_USE_GETTIMEOFDAY) && NNG_USE_CLOCKID != CLOCK_REALTIME
+#define NNG_SETCLOCK
+#endif
+
 #define NNG_USE_POSIX_RESOLV_GAI 1
+
+// This implementation of notification pipes works ~everywhere on POSIX,
+// as it only relies on pipe() and non-blocking I/O.
+
+// So as much as we would like to use eventfd, it turns out to be completely
+// busted on some systems (latest Ubuntu release for example).  So we go
+// back to the old but repliable pipe() system call.
+#undef NNG_USE_EVENTFD
 
 #endif // NNG_PLATFORM_POSIX

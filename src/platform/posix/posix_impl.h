@@ -11,27 +11,9 @@
 #ifndef PLATFORM_POSIX_IMPL_H
 #define PLATFORM_POSIX_IMPL_H
 
-// Some dependency notes:
-//
-// NNG_PLATFORM_POSIX_THREAD depends on NNG_PLATFORM_POSIX_CLOCK.  Also,
-// when using NNG_PLATFORM_POSIX_CLOCK, your condition variable timeouts need
-// to use the same base clock values.  Normally these should be used
-// together.  Almost everything depends on NNG_PLATFORM_POSIX_DEBUG.
-#ifdef NNG_PLATFORM_POSIX
-#define NNG_PLATFORM_POSIX_ALLOC
-#define NNG_PLATFORM_POSIX_DEBUG
-#define NNG_PLATFORM_POSIX_CLOCK
-#define NNG_PLATFORM_POSIX_IPC
-#define NNG_PLATFORM_POSIX_TCP
-#define NNG_PLATFORM_POSIX_PIPE
-#define NNG_PLATFORM_POSIX_RANDOM
-#define NNG_PLATFORM_POSIX_SOCKET
-#define NNG_PLATFORM_POSIX_THREAD
-#define NNG_PLATFORM_POSIX_PIPEDESC
-#define NNG_PLATFORM_POSIX_EPDESC
-#define NNG_PLATFORM_POSIX_SOCKADDR
-#define NNG_PLATFORM_POSIX_UDP
-
+#if defined(__ZEPHYR__)
+#include "platform/posix/zephyr_config.h"
+#else
 #include "platform/posix/posix_config.h"
 #endif
 
@@ -50,6 +32,18 @@ extern int nni_plat_errno(int);
 #ifdef NNG_PLATFORM_POSIX_THREAD
 
 #include <pthread.h>
+
+#ifndef PTHREAD_MUTEX_INITIALIZER
+#define PTHREAD_MUTEX_INITIALIZER {}
+#endif
+
+#ifndef PTHREAD_COND_INITIALIZER
+#define PTHREAD_COND_INITIALIZER {}
+#endif
+
+#ifndef PTHREAD_RWLOCK_INITIALIZER
+#define PTHREAD_RWLOCK_INITIALIZER {}
+#endif
 
 // These types are provided for here, to permit them to be directly inlined
 // elsewhere.
@@ -120,6 +114,30 @@ struct nni_atomic_bool {
 
 struct nni_atomic_ptr {
 	atomic_uintptr_t v;
+};
+
+#elif defined(__ZEPHYR__)
+
+struct nni_atomic_flag {
+	atomic_t f;
+};
+
+struct nni_atomic_bool {
+	atomic_t b;
+};
+
+struct nni_atomic_int {
+	atomic_t v;
+};
+
+struct nni_atomic_u64 {
+	/* XXXX a 32-bit value is used instead. Should be enough
+	        for storing file descriptors on an embedded system */
+	atomic_t v;
+};
+
+struct nni_atomic_ptr {
+	atomic_ptr_t v;
 };
 
 #else // NNG_HAVE_C11_ATOMIC

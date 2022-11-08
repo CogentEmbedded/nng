@@ -18,7 +18,9 @@
 #include <string.h>
 #include <sys/socket.h>
 #include <sys/types.h>
+#if !defined(__ZEPHYR__)
 #include <sys/uio.h>
+#endif
 #include <unistd.h>
 
 // POSIX AIO using poll().  We use a single poll thread to perform

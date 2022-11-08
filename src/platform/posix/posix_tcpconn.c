@@ -19,7 +19,9 @@
 #include <stdbool.h>
 #include <string.h>
 #include <sys/socket.h>
+#if !defined(__ZEPHYR__)
 #include <sys/uio.h>
+#endif
 
 #ifndef MSG_NOSIGNAL
 #define MSG_NOSIGNAL 0

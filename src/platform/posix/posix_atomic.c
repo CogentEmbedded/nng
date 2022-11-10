@@ -190,8 +190,6 @@ nni_atomic_cas64(nni_atomic_u64 *v, uint64_t comp, uint64_t new)
 	return (atomic_compare_exchange_strong(&v->v, &cv, nv));
 }
 
-#elif NNI_GCC_VERSION >= 40700 || \
-    defined(__clang__) // we have "new" GCC __atomic builtins
 #elif defined(__ZEPHYR__)
 
 bool
@@ -355,6 +353,9 @@ nni_atomic_cas64(nni_atomic_u64 *v, uint64_t comp, uint64_t new)
 {
 	return atomic_cas(&v->v, (atomic_t) comp, (atomic_t) new);
 }
+
+#elif NNI_GCC_VERSION >= 40700 || \
+    defined(__clang__) // we have "new" GCC __atomic builtins
 
 bool
 nni_atomic_flag_test_and_set(nni_atomic_flag *f)

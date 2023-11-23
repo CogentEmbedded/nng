@@ -329,6 +329,9 @@ nni_plat_thr_set_name(nni_plat_thr *thr, const char *name)
 	} else {
 		pthread_set_name_np(thr->tid, name);
 	}
+#else
+	(void)thr;
+	(void)name;
 #endif
 }
 

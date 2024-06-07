@@ -170,7 +170,7 @@ nni_task_dispatch(nni_task *task)
 
 	nni_mtx_lock(&tq->tq_mtx);
 	nni_list_append(&tq->tq_tasks, task);
-	nni_cv_wake1(&tq->tq_sched_cv); // waking just one waiter is adequate
+	nni_cv_wake(&tq->tq_sched_cv);
 	nni_mtx_unlock(&tq->tq_mtx);
 }
 

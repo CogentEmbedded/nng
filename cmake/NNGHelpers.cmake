@@ -67,6 +67,11 @@ function(nng_include_directories)
     target_include_directories(nng_testing PRIVATE ${ARGN})
 endfunction()
 
+# nng_include_directories adds system include directories.
+function(nng_include_system_directories)
+    target_include_directories(nng SYSTEM BEFORE PUBLIC ${ARGN})
+    target_include_directories(nng_testing SYSTEM BEFORE PUBLIC ${ARGN})
+endfunction()
 
 # nng_sources_if adds the sources unconditionally to the test library,
 # but conditionally to the production library.  This allows us to get

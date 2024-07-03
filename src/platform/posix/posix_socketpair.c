@@ -38,6 +38,7 @@ nni_socket_pair(int fds[2])
 int
 nni_socket_pair(int fds[2])
 {
+	(void)fds;
 	return (NNG_ENOTSUP);
 }
 #endif

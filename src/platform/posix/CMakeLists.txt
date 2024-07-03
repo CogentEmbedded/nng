@@ -35,7 +35,29 @@ if (NNG_PLATFORM_POSIX)
     nng_check_lib(pthread pthread_set_name_np NNG_HAVE_PTHREAD_SET_NAME_NP)
     nng_check_lib(pthread pthread_setname_np NNG_HAVE_PTHREAD_SETNAME_NP)
     nng_check_lib(nsl gethostbyname NNG_HAVE_LIBNSL)
-    nng_check_lib(socket socket NNG_HAVE_LIBSOCKET)
+    if (CMAKE_SYSTEM_NAME STREQUAL "QNX" AND USE_QNX_IO_SOCK)
+        if (CMAKE_SYSTEM_PROCESSOR STREQUAL "aarch64")
+            set(IO_SOCK_PATH "${CMAKE_SYSROOT}/aarch64le/io-sock/lib")
+        else()
+            set(IO_SOCK_PATH "${CMAKE_SYSROOT}/${CMAKE_SYSTEM_PROCESSOR}/io-sock/lib")
+        endif()
+
+        find_library(IO_SOCK_LIBRARY
+            socket
+            PATHS ${IO_SOCK_PATH}
+            NO_DEFAULT_PATH
+            REQUIRED
+        )
+
+        nng_include_system_directories(
+            "$<BUILD_INTERFACE:${CMAKE_SYSROOT}/usr/include/devs>"
+            "$<BUILD_INTERFACE:${CMAKE_SYSROOT}/usr/include/devs/include_${CMAKE_SYSTEM_PROCESSOR}>"
+            "$<BUILD_INTERFACE:${CMAKE_SYSROOT}/usr/include/io-sock>")
+
+        nng_link_libraries(${IO_SOCK_LIBRARY})
+    else()
+        nng_check_lib(socket socket NNG_HAVE_LIBSOCKET)
+    endif()
 
     # GCC needs libatomic on some architectures (e.g. ARM) because the
     # underlying architecture may lack the necessary atomic primitives.

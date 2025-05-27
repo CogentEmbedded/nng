@@ -35,6 +35,7 @@ if (BUILD_SHARED_LIBS)
         set_target_properties(nng PROPERTIES C_VISIBILITY_PRESET hidden)
     endif ()
 else ()
+    set_property(TARGET nng PROPERTY POSITION_INDEPENDENT_CODE ON)
     target_compile_definitions(nng PUBLIC NNG_STATIC_LIB)
 endif ()
 
